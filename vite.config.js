@@ -9,6 +9,8 @@ export default defineConfig({
         },
     },
     build: {
+        // MapLibre GL is ~800 kB minified and cannot be split further — raise limit to suppress noise.
+        chunkSizeWarningLimit: 900,
         rollupOptions: {
             output: {
                 manualChunks: (id) => {
