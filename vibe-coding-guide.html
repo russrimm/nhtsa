@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vibe Coding Training Guide — NHTSA Automotive Analyzer</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+    const theme = param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0,0,0,0.12);
+  --cp-overlay: rgba(255,255,255,0.8);
+  --cp-panel: rgba(255,255,255,0.86);
+  --cp-panel-strong: rgba(255,255,255,0.96);
+  --cp-sheen: rgba(255,255,255,0.55);
+  --cp-highlight: rgba(177,31,75,0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253,142,161,0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0,0,0,0.32);
+  --cp-overlay: rgba(41,41,41,0.88);
+  --cp-panel: rgba(41,41,41,0.72);
+  --cp-panel-strong: rgba(41,41,41,0.96);
+  --cp-sheen: rgba(255,255,255,0.04);
+  --cp-highlight: rgba(253,142,161,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  line-height: 1.65;
+  font-size: 15px;
+}
+
+a { color: var(--cp-link); }
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* Header */
+.hero {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 40px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cp-accent);
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+.hero p {
+  color: var(--cp-text-muted);
+  font-size: 15px;
+  max-width: 580px;
+}
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.badge {
+  display: inline-block;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cp-text-muted);
+}
+
+/* TOC */
+.toc {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin-bottom: 36px;
+}
+.toc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cp-text-muted); margin-bottom: 14px; }
+.toc ol { padding-left: 20px; }
+.toc li { margin-bottom: 6px; font-size: 14px; }
+.toc a { text-decoration: none; color: var(--cp-text); }
+.toc a:hover { color: var(--cp-accent); }
+
+/* Section label */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cp-accent);
+  margin-bottom: 16px;
+  margin-top: 48px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--cp-accent-soft);
+}
+
+/* Step card */
+.step {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 28px;
+  cursor: pointer;
+  user-select: none;
+}
+.step-header:hover { background: var(--cp-surface-soft); }
+.step-num {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.step-title-block { flex: 1; }
+.step-title { font-size: 16px; font-weight: 600; line-height: 1.3; }
+.step-subtitle { font-size: 13px; color: var(--cp-text-muted); margin-top: 3px; }
+.step-chevron {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--cp-text-muted);
+  transition: transform 0.2s;
+  margin-top: 6px;
+}
+.step.open .step-chevron { transform: rotate(180deg); }
+.step-body {
+  display: none;
+  padding: 0 28px 28px;
+  border-top: 1px solid var(--cp-border);
+}
+.step.open .step-body { display: block; }
+.step-body > * + * { margin-top: 16px; }
+
+/* Prompt box */
+.prompt-box {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-left: 4px solid var(--cp-accent);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--cp-text);
+  position: relative;
+}
+.prompt-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cp-accent);
+  margin-bottom: 6px;
+  font-style: normal;
+}
+
+/* Code block */
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Callout boxes */
+.callout {
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 14px;
+}
+.callout-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.callout.lesson {
+  background: rgba(0, 120, 212, 0.07);
+  border: 1px solid rgba(0, 120, 212, 0.25);
+}
+.callout.lesson .callout-label { color: var(--cp-link); }
+.callout.result {
+  background: rgba(22, 163, 74, 0.07);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+}
+.callout.result .callout-label { color: var(--cp-success); }
+.callout.warning {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.callout.warning .callout-label { color: var(--cp-warning); }
+
+h3 { font-size: 14px; font-weight: 600; color: var(--cp-text-muted); margin-bottom: 6px; }
+p { font-size: 14px; color: var(--cp-text); }
+ul, ol { padding-left: 20px; font-size: 14px; }
+ul li, ol li { margin-bottom: 5px; }
+
+/* Summary table */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--cp-surface);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--cp-border);
+}
+.summary-table th {
+  background: var(--cp-surface-soft);
+  border-bottom: 1px solid var(--cp-border);
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-text-muted);
+}
+.summary-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--cp-border);
+  vertical-align: top;
+}
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table tr:hover td { background: var(--cp-surface-soft); }
+
+/* Theme toggle */
+.theme-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--cp-text);
+  font-family: inherit;
+}
+.theme-btn:hover { background: var(--cp-surface-soft); }
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.stat {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+}
+.stat-number { font-size: 24px; font-weight: 700; color: var(--cp-accent); }
+.stat-label { font-size: 11px; color: var(--cp-text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Sub-items inside a step (multiple examples) */
+.sub-item {
+  background: var(--cp-bg);
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+.sub-item > * + * { margin-top: 12px; }
+.sub-item-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cp-text-muted);
+  margin-bottom: 8px;
+}
+.examples-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+</style>
+</head>
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()">Toggle theme</button>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Vibe Coding Training Guide</div>
+    <h1>Building the NHTSA Automotive Analyzer</h1>
+    <p>A step-by-step record of how a production-quality SPA was built using GitHub Copilot agent mode — from an empty folder to a fully deployed app — using only natural language prompts.</p>
+    <div class="badge-row">
+      <span class="badge">Vite 5</span>
+      <span class="badge">React 18</span>
+      <span class="badge">TypeScript</span>
+      <span class="badge">Tailwind CSS</span>
+      <span class="badge">Radix UI</span>
+      <span class="badge">TanStack Query</span>
+      <span class="badge">React Router 6</span>
+      <span class="badge">Recharts</span>
+      <span class="badge">MapLibre GL</span>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-number">3</div><div class="stat-label">Steps in this guide</div></div>
+      <div class="stat"><div class="stat-number">~40</div><div class="stat-label">Files created</div></div>
+      <div class="stat"><div class="stat-number">6</div><div class="stat-label">APIs integrated</div></div>
+      <div class="stat"><div class="stat-number">0</div><div class="stat-label">Boilerplate hand-written</div></div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#prereqs">Prerequisites</a></li>
+      <li><a href="#step1">Step 1 — Plan &amp; Build</a></li>
+      <li><a href="#step2">Step 2 — Fix Problems As They Surface</a></li>
+      <li><a href="#step3">Step 3 — Add Features By Describing the Experience</a></li>
+      <li><a href="#patterns">Core Vibe Coding Patterns</a></li>
+    </ol>
+  </div>
+
+  <!-- Prerequisites -->
+  <div id="prereqs" class="section-label">Prerequisites</div>
+
+  <div class="step open">
+    <div class="step-header" onclick="toggle(this)">
+      <div class="step-num">✓</div>
+      <div class="step-title-block">
+        <div class="step-title">Before you start: what you need</div>
+        <div class="step-subtitle">Software and accounts required</div>
+      </div>
+      <svg class="step-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="step-body">
+      <ul>
+        <li><strong>Visual Studio Code</strong> — <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a></li>
+        <li><strong>GitHub Copilot subscription</strong> with <strong>agent mode enabled</strong> — required for multi-file editing and tool use</li>
+        <li><strong>Node.js 20+</strong> installed — <a href="https://nodejs.org" target="_blank">nodejs.org</a> (verify with <code>node -v</code> in your terminal)</li>
+        <li><strong>An empty folder</strong> for the project — this guide used <code>C:\repos\nhtsa</code></li>
+        <li><strong>Open the folder in VS Code</strong> before starting (<em>File → Open Folder</em>)</li>
+      </ul>
+      <div class="callout warning">
+        <div class="callout-label">⚠ Important</div>
+        All prompts below are typed into the <strong>GitHub Copilot Chat panel in agent mode</strong> (select "Agent" from the dropdown at the top of the chat input). Do not use Edit mode or Ask mode for these steps.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div id="step1" class="section-label">Step 1 — Plan &amp; Build</div>
+
+  <div class="step">
+    <div class="step-header" onclick="toggle(this)">
+      <div class="step-num">1</div>
+      <div class="step-title-block">
+        <div class="step-title">Research, plan, then trigger the build</div>
+        <div class="step-subtitle">Give the AI a URL and a quality bar — it asks the right questions, then builds everything</div>
+      </div>
+      <svg class="step-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="step-body">
+      <div class="sub-item">
+        <div class="sub-item-label">Prompt A — kick off research</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Your exact prompt</div>
+          I want to utilize all of the useful APIs from NHTSA website at https://www.nhtsa.gov/nhtsa-datasets-and-apis and build an automotive analyzer app in typescript and react on node.js. Research the apis and determine the next steps. I want it to look modern and I want it to be useful for anyone who uses it.
+        </div>
+        <div class="callout result">
+          <div class="callout-label">✓ What happened</div>
+          The agent fetched the NHTSA API documentation page, identified 6 usable public APIs (vPIC decode, NCAP Safety Ratings, Recalls, Complaints, Investigations, Car Seat Locator), and asked 4 clarifying questions before writing any code.
+        </div>
+        <p><strong>The 4 clarifying questions — and the answers given in this session:</strong></p>
+        <ul>
+          <li><strong>Framework:</strong> Vite + React SPA (no server-side rendering)</li>
+          <li><strong>UI style:</strong> shadcn-style components with Tailwind CSS and Radix UI primitives</li>
+          <li><strong>Features:</strong> All available features (VIN decode, ratings, recalls, complaints, investigations, car seat locator)</li>
+          <li><strong>Deployment:</strong> Local development only (no backend or cloud hosting required)</li>
+        </ul>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Prompt B — trigger the build</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Your exact prompt</div>
+          Start implementation.
+        </div>
+        <div class="callout result">
+          <div class="callout-label">✓ What happened</div>
+          ~40 files were created in one pass: <code>package.json</code>, <code>vite.config.ts</code>, <code>tsconfig.json</code>, Tailwind config, all API client modules, all React Query hooks, all page components, all UI primitives (Button, Card, Input, Badge, Tabs, Dialog, Select, Skeleton), routing, dark/light theme system, recent-search localStorage persistence, MapLibre map, and a Recharts chart. The agent ran <code>npm install</code> automatically. Two TypeScript errors that surfaced during the build were fixed automatically — no additional prompts needed.
+        </div>
+      </div>
+      <div class="callout lesson">
+        <div class="callout-label">💡 Key lesson</div>
+        <strong>The plan is the real work.</strong> Giving the AI a URL to research (rather than describing APIs from memory) means it works from accurate documentation. The clarifying Q&amp;A produces a written plan that acts as a contract — then two words trigger the entire build.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="step2" class="section-label">Step 2 — Fix Problems As They Surface</div>
+
+  <div class="step">
+    <div class="step-header" onclick="toggle(this)">
+      <div class="step-num">2</div>
+      <div class="step-title-block">
+        <div class="step-title">Paste errors, describe wrong output, report regressions</div>
+        <div class="step-subtitle">Every problem is just another prompt — paste it exactly, never summarize</div>
+      </div>
+      <svg class="step-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="step-body">
+      <p>Problems fall into three types. All three happened in this build and all three were fixed with a single prompt each.</p>
+      <div class="examples-list">
+
+        <div class="sub-item">
+          <div class="sub-item-label">Type 1 — Paste a build error or warning verbatim</div>
+          <div class="prompt-box">
+            <div class="prompt-label">Prompt (CSS @import build error — pasted exactly from terminal)</div>
+            transforming (4) src\App.tsx[vite:css] @import must precede all other statements (besides @charset or empty @layer)
+            55 |
+            56 |  /* MapLibre styles */
+            57 |  @import 'maplibre-gl/dist/maplibre-gl.css';
+          </div>
+          <div class="callout result">
+            <div class="callout-label">✓ What happened</div>
+            The MapLibre CSS <code>@import</code> was placed after <code>@tailwind</code> directives in <code>src/index.css</code>. CSS requires all <code>@import</code> rules first. The agent moved it to the top. One-file fix.
+          </div>
+          <div class="prompt-box" style="margin-top:12px;">
+            <div class="prompt-label">Prompt (bundle size warning — pasted exactly from build output)</div>
+            vite v5.4.21 building for production...
+            ✓ 2551 modules transformed.
+            dist/assets/index-DxvSvOUt.js   1,655.20 kB │ gzip: 470.37 kB
+
+            (!) Some chunks are larger than 500 kB after minification. Consider:
+            - Using dynamic import() to code-split the application
+            - Use build.rollupOptions.output.manualChunks to improve chunking
+          </div>
+          <div class="callout result">
+            <div class="callout-label">✓ What happened</div>
+            All page components were converted to <code>React.lazy()</code> with <code>Suspense</code>, and <code>vite.config.ts</code> was updated with <code>manualChunks</code> to split MapLibre, Recharts, React, TanStack Query, and Radix UI into separate vendor bundles. Initial load dropped from 470 KB → ~80 KB gzipped.
+          </div>
+          <div class="prompt-box" style="margin-top:12px;">
+            <div class="prompt-label">Prompt (runtime error — pasted exactly from browser error overlay)</div>
+            Unexpected Application Error!
+            Button is not defined
+            ReferenceError: Button is not defined
+                at VehicleHubPage (http://localhost:5173/src/pages/VehicleHubPage.tsx?t=1779196911206:85:11)
+          </div>
+          <div class="callout result">
+            <div class="callout-label">✓ What happened</div>
+            The <code>Button</code> component was used in <code>VehicleHubPage.tsx</code> but the import was missing. The agent added <code>import { Button } from '@/components/ui/button';</code>. One-line fix.
+          </div>
+        </div>
+
+        <div class="sub-item">
+          <div class="sub-item-label">Type 2 — Describe wrong UI output (attach a screenshot)</div>
+          <div class="prompt-box">
+            <div class="prompt-label">Prompt (with screenshot attached)</div>
+            the screen says lookup by year/make/model but when selecting the make it should say things like Honda, Hyundai, Ford, Toyota, etc but it shows this instead
+          </div>
+          <div class="callout result">
+            <div class="callout-label">✓ What happened</div>
+            NHTSA's <code>GetAllMakes</code> endpoint returns every registered manufacturer (~12,000 entries including custom shops like "#1 Alpine Customs"). The agent switched the dropdowns to the recall products API (<code>/products/vehicle/makes?modelYear={year}&amp;issueType=r</code>), which returns only mainstream consumer brands scoped to the selected year.
+          </div>
+        </div>
+
+        <div class="sub-item">
+          <div class="sub-item-label">Type 3 — Report a regression (when a fix breaks something new)</div>
+          <div class="prompt-box">
+            <div class="prompt-label">Prompt</div>
+            now it's showing "No image available" on each one I search
+          </div>
+          <div class="callout result">
+            <div class="callout-label">✓ What happened</div>
+            NHTSA returns make/model in ALL CAPS (<code>HYUNDAI</code>, <code>PALISADE</code>). Wikipedia article titles use Title Case. The previous fix introduced a casing mismatch that caused 404s on every lookup. The agent added a <code>toTitleCase()</code> step before constructing Wikipedia search titles. One-line fix.
+          </div>
+        </div>
+
+      </div>
+      <div class="callout lesson">
+        <div class="callout-label">💡 Key lesson</div>
+        <strong>Never summarize an error — paste it exactly.</strong> Build errors, browser stack traces, and build warnings are already precise machine-readable descriptions of the problem. Paraphrasing removes the information the agent needs. Screenshots work the same way for visual bugs.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div id="step3" class="section-label">Step 3 — Add Features By Describing the Experience</div>
+
+  <div class="step">
+    <div class="step-header" onclick="toggle(this)">
+      <div class="step-num">3</div>
+      <div class="step-title-block">
+        <div class="step-title">Describe what the user should experience — not how to build it</div>
+        <div class="step-subtitle">The agent chooses the architecture; you choose the outcome</div>
+      </div>
+      <svg class="step-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="step-body">
+      <div class="examples-list">
+
+        <div class="sub-item">
+          <div class="sub-item-label">Example A — asking if something is possible</div>
+          <div class="prompt-box">
+            <div class="prompt-label">Prompt</div>
+            is there any way to consistently display an image of the vehicle selected?
+          </div>
+          <div class="callout result">
+            <div class="callout-label">✓ What happened</div>
+            The agent evaluated free image sources (no API key required), chose the Wikipedia MediaWiki API as the most reliable option, created <code>src/lib/api/vehicleImage.ts</code> with a filename-scoring algorithm to avoid irrelevant images, built a <code>VehicleImage</code> React component with loading skeleton and car-icon fallback, and added image display to both the VIN result page and the vehicle hub page.
+          </div>
+        </div>
+
+        <div class="sub-item">
+          <div class="sub-item-label">Example B — requesting a full new feature</div>
+          <div class="prompt-box">
+            <div class="prompt-label">Prompt</div>
+            i would like to add a compare feature so you can select multiple cars and show all of the values for each car to compare them
+          </div>
+          <div class="callout result">
+            <div class="callout-label">✓ What happened</div>
+            Eight files were created or modified: localStorage persistence store, React Context (add / remove / clear / isInCompare), a sticky bottom tray showing selected vehicles with a "Compare →" button, a full comparison page with NCAP star ratings and green/red highlights for best/worst per category, a new lazy route, a nav link, and an "Add to Compare" toggle button on the vehicle hub page.
+          </div>
+        </div>
+
+      </div>
+      <div class="callout lesson">
+        <div class="callout-label">💡 Key lesson</div>
+        <strong>Describe the user experience — not the implementation.</strong> "Is there any way to…" lets the agent evaluate feasibility. "I would like to add a feature so you can…" communicates intent. State management, context API, routing, and component architecture are the agent's responsibility — not yours.
+      </div>
+    </div>
+  </div>
+
+  <!-- Patterns -->
+  <div id="patterns" class="section-label">Core Vibe Coding Patterns</div>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Pattern</th>
+        <th>What to do</th>
+        <th>Example from this build</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Research before build</strong></td>
+        <td>Give the agent a URL and ask it to research before writing code</td>
+        <td>Linked the NHTSA API docs page; received a plan with 6 APIs identified</td>
+      </tr>
+      <tr>
+        <td><strong>Plan, then trigger</strong></td>
+        <td>Let the agent write a plan first; use "Start implementation" as the trigger</td>
+        <td>"Start implementation." → 40 files in one pass</td>
+      </tr>
+      <tr>
+        <td><strong>Paste raw errors</strong></td>
+        <td>Never summarize — copy the exact compiler or runtime output</td>
+        <td>Pasted the full <code>@import</code> and <code>ReferenceError</code> outputs verbatim</td>
+      </tr>
+      <tr>
+        <td><strong>Screenshot UI problems</strong></td>
+        <td>Attach a screenshot; describe expected vs. actual behavior</td>
+        <td>"it shows this instead" [screenshot] → agent identified the wrong API endpoint</td>
+      </tr>
+      <tr>
+        <td><strong>Paste build warnings</strong></td>
+        <td>Warnings are prompts — they describe a real problem</td>
+        <td>Pasted the 500 kB chunk warning → code splitting implemented automatically</td>
+      </tr>
+      <tr>
+        <td><strong>Ask "is there any way to…"</strong></td>
+        <td>Check feasibility before requesting; the agent evaluates options</td>
+        <td>"is there any way to consistently display an image" → Wikipedia API chosen</td>
+      </tr>
+      <tr>
+        <td><strong>Describe UX, not code</strong></td>
+        <td>State what the user should experience; let the agent choose the architecture</td>
+        <td>"select multiple cars and show all the values" → full compare system built</td>
+      </tr>
+      <tr>
+        <td><strong>Report regressions immediately</strong></td>
+        <td>When a fix breaks something new, describe the new symptom right away</td>
+        <td>"now it's showing No image available" → title-case normalization fixed</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 32px; padding: 24px; background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 16px;">
+    <h3 style="color: var(--cp-text); font-size: 15px; margin-bottom: 10px;">The mindset shift</h3>
+    <p style="color: var(--cp-text-muted);">Traditional coding: you write instructions for a computer.<br>Vibe coding: you write intent for an AI. The AI writes the instructions for the computer.<br><br>Your job is to be precise about <em>what</em> you want and honest about <em>what went wrong</em>. The agent's job is to figure out <em>how</em>.</p>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+function toggle(header) {
+  const step = header.parentElement;
+  step.classList.toggle('open');
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+}
+</script>
+</body>
+</html>
