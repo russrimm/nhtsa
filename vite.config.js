@@ -18,7 +18,8 @@ export default defineConfig({
                         return 'vendor-map';
                     if (id.includes('recharts') || id.includes('victory-vendor') || id.includes('d3-'))
                         return 'vendor-charts';
-                    if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/'))
+                    // Include scheduler (React-DOM's internal dep) in the same chunk to avoid circular refs
+                    if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/scheduler'))
                         return 'vendor-react';
                     if (id.includes('react-router') || id.includes('@remix-run'))
                         return 'vendor-router';
@@ -26,8 +27,6 @@ export default defineConfig({
                         return 'vendor-query';
                     if (id.includes('@radix-ui'))
                         return 'vendor-radix';
-                    if (id.includes('node_modules'))
-                        return 'vendor-misc';
                 },
             },
         },
