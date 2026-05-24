@@ -29,7 +29,7 @@ export function AboutPage() {
 
       {/* Builder card */}
       <Card>
-        <CardHeader><CardTitle className="text-base">Built by Russ Rimmer</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">Built by Russ Rimmerman</CardTitle></CardHeader>
         <CardContent className="space-y-4 text-sm">
           <p>
             This app was built by{' '}
